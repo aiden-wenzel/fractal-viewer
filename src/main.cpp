@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
+#include <fstream>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -9,19 +10,6 @@ void processInput(GLFWwindow *window);
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
-
-std::string vertexShaderSource = "#version 330 core\n"
-"layout (location = 0) in vec3 aPos;\n"
-"void main()\n"
-"{\n"
-"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-"}\0";
-std::string fragmentShaderSource = "#version 330 core\n"
-"out vec4 FragColor;\n"
-"void main()\n"
-"{\n"
-"   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-"}\n\0";
 
 GLFWwindow* initializeWindow(size_t width, size_t height) {
 
@@ -83,6 +71,21 @@ GLuint compileShadarProgram(const char* vertexShaderSource, const char* fragment
 	return shaderProgram;
 }
 
+void readShaderFile(const std::string& filePath, std::string& shaderString) {
+	std::fstream fileStream(filePath);
+	if (!fileStream.is_open()) {
+		std::cout << "Could not open file " << filePath << "\n";
+		exit(-2);
+	}
+
+	std::string tmp;
+	while (std::getline(fileStream, tmp)) {
+		shaderString.append(tmp + "\n");
+	}
+	
+	fileStream.close();
+}
+
 int main()
 {
 	auto window = initializeWindow(SCR_WIDTH, SCR_HEIGHT);
@@ -91,6 +94,10 @@ int main()
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	gladLoadGL(glfwGetProcAddress);
 	
+	std::string vertexShaderSource;
+	std::string fragmentShaderSource;
+	readShaderFile("../src/mandel.vert", vertexShaderSource);
+	readShaderFile("../src/mandel.frag", fragmentShaderSource);
 	auto shaderProgram = compileShadarProgram(vertexShaderSource.c_str(), fragmentShaderSource.c_str());
 	// set up vertex data (and buffer(s)) and configure vertex attributes
 	// ------------------------------------------------------------------
