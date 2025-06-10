@@ -10,13 +10,13 @@ void processInput(GLFWwindow *window);
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-const char *vertexShaderSource = "#version 330 core\n"
+std::string vertexShaderSource = "#version 330 core\n"
 "layout (location = 0) in vec3 aPos;\n"
 "void main()\n"
 "{\n"
 "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
 "}\0";
-const char *fragmentShaderSource = "#version 330 core\n"
+std::string fragmentShaderSource = "#version 330 core\n"
 "out vec4 FragColor;\n"
 "void main()\n"
 "{\n"
@@ -41,7 +41,7 @@ GLFWwindow* initializeWindow(size_t width, size_t height) {
 	return window;
 }
 
-GLuint compileShadarProgram(char* vertexShaderSource, char* fragmentShaderSource) {
+GLuint compileShadarProgram(const char* vertexShaderSource, const char* fragmentShaderSource) {
 	// vertex shader
 	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
@@ -91,7 +91,7 @@ int main()
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	gladLoadGL(glfwGetProcAddress);
 	
-	auto shaderProgram = compileShadarProgram((char*)vertexShaderSource, (char*)fragmentShaderSource);
+	auto shaderProgram = compileShadarProgram(vertexShaderSource.c_str(), fragmentShaderSource.c_str());
 	// set up vertex data (and buffer(s)) and configure vertex attributes
 	// ------------------------------------------------------------------
 	float vertices[] = {
