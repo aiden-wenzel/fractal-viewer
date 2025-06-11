@@ -1,7 +1,12 @@
 #version 330 core
+
 out vec4 FragColor;
+uniform vec2 screen_dim;
+
 void main()
 {
-	FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
-};
-
+	vec2 origin = vec2(0.5, 0.5);
+	vec2 normChoord = gl_FragCoord.xy / screen_dim.xy;
+	float dis = distance(origin, normChoord);
+    FragColor = vec4(dis, dis, dis, 1.0);
+} 

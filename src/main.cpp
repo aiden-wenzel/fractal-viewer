@@ -3,13 +3,14 @@
 
 #include <iostream>
 #include <fstream>
+#include <vector>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 
 // settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+float SCR_WIDTH = 900.0f;
+float SCR_HEIGHT = 900.0f;
 
 GLFWwindow* initializeWindow(size_t width, size_t height) {
 
@@ -121,6 +122,10 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, 0); 
 	glBindVertexArray(0); 
 
+	glUseProgram(shaderProgram);
+	GLint uniform_loc = glGetUniformLocation(shaderProgram, "screen_dim");
+	glUniform2f(uniform_loc, SCR_WIDTH, SCR_HEIGHT);
+
 	while (!glfwWindowShouldClose(window))
 	{
 		// input
@@ -133,7 +138,6 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// draw our first triangle
-		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		// glBindVertexArray(0); // no need to unbind it every time 
