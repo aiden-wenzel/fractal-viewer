@@ -8,13 +8,14 @@
 // settings
 float SCR_WIDTH = 900.0f;
 float SCR_HEIGHT = 900.0f;
-
+float scale = 1.0f;
 
 GLFWwindow* initializeWindow(size_t width, size_t height);
 GLuint compileShadarProgram(const char* vertexShaderSource, const char* fragmentShaderSource);
 void readShaderFile(const std::string& filePath, std::string& shaderString);
 static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 int main() {
 	auto window = initializeWindow(SCR_WIDTH, SCR_HEIGHT);
@@ -60,6 +61,9 @@ int main() {
 	std::vector<double> prev_mouse_pos = {0.0f, 0.0f};
 	glfwSetCursorPosCallback(window, cursor_position_callback);
 	glfwSetMouseButtonCallback(window, mouse_button_callback);
+	glfwSetScrollCallback(window, scroll_callback);
+
+	GLint u_scale_loc = glGetUniformLocation(shaderProgram, "u_scale");
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwGetCursorPos(window, &curr_mouse_pos[0], &curr_mouse_pos[1]);	
@@ -71,6 +75,8 @@ int main() {
 		}
 
 		glUniform2f(u_offset_loc, offset[0], offset[1]);
+		std::cout << scale << '\n';
+		glUniform1f(u_scale_loc, scale);
 		// render
 		// ------
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -180,4 +186,16 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
  //    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
 	// 	std::cout << "Pressing\n";
 	// }
+}
+
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+    if (yoffset > 0) {
+        // Scrolled up (zooming in)
+		scale *= 0.8;
+    } else if (yoffset < 0) {
+        // Scrolled down (zooming out)
+		scale *= 1.2;
+    }
+	std::cout << scale << '\n';
 }
