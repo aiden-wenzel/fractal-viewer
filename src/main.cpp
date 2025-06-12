@@ -14,6 +14,7 @@ GLFWwindow* initializeWindow(size_t width, size_t height);
 GLuint compileShadarProgram(const char* vertexShaderSource, const char* fragmentShaderSource);
 void readShaderFile(const std::string& filePath, std::string& shaderString);
 static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 
 int main() {
 	auto window = initializeWindow(SCR_WIDTH, SCR_HEIGHT);
@@ -52,14 +53,24 @@ int main() {
 	GLint uniform_loc = glGetUniformLocation(shaderProgram, "screen_dim");
 	glUniform2f(uniform_loc, SCR_WIDTH, SCR_HEIGHT);
 
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	GLint u_offset_loc = glGetUniformLocation(shaderProgram, "u_offset");
-	std::vector<float> offset = {0.0f, -200.0f};
+	std::vector<float> offset = {0.0f, 0.0f};
+	std::vector<double> curr_mouse_pos = {0.0f, 0.0f};
+	std::vector<double> prev_mouse_pos = {0.0f, 0.0f};
 	glfwSetCursorPosCallback(window, cursor_position_callback);
-	while (!glfwWindowShouldClose(window))
-	{
-		offset[0] -= 0.5f;
-		glUniform2f(u_offset_loc, offset[0], offset[1]);
+	glfwSetMouseButtonCallback(window, mouse_button_callback);
 
+	while (!glfwWindowShouldClose(window)) {
+		glfwGetCursorPos(window, &curr_mouse_pos[0], &curr_mouse_pos[1]);	
+
+		int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
+		if (state == GLFW_PRESS) {
+			offset[0] = offset[0] - (curr_mouse_pos[0] - prev_mouse_pos[0]);
+			offset[1] = offset[1] + (curr_mouse_pos[1] - prev_mouse_pos[1]);
+		}
+
+		glUniform2f(u_offset_loc, offset[0], offset[1]);
 		// render
 		// ------
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -68,6 +79,7 @@ int main() {
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
+		prev_mouse_pos = curr_mouse_pos;
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
@@ -161,4 +173,11 @@ void readShaderFile(const std::string& filePath, std::string& shaderString) {
 
 static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
 
+}
+
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+ //    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
+	// 	std::cout << "Pressing\n";
+	// }
 }
