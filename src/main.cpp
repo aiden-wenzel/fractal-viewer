@@ -126,8 +126,13 @@ int main()
 	GLint uniform_loc = glGetUniformLocation(shaderProgram, "screen_dim");
 	glUniform2f(uniform_loc, SCR_WIDTH, SCR_HEIGHT);
 
+	GLint u_offset_loc = glGetUniformLocation(shaderProgram, "u_offset");
+	std::vector<float> offset = {0.0f, -200.0f};
+
 	while (!glfwWindowShouldClose(window))
 	{
+		offset[0] -= 0.5f;
+		glUniform2f(u_offset_loc, offset[0], offset[1]);
 		// input
 		// -----
 		processInput(window);
