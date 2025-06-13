@@ -32,8 +32,6 @@ int main(int argc, char** argv) {
 	read_shader_file("../src/mandel.vert", vertex_shader_source);
 	read_shader_file("../src/mandel.frag", fragment_shader_source);
 	auto shader_program = compile_shader_program(vertex_shader_source.c_str(), fragment_shader_source.c_str());
-	// set up vertex data (and buffer(s)) and configure vertex attributes
-	// ------------------------------------------------------------------
 	float vertices[] = {
 		-1.0f, -1.0f, 0.0f,
 		-1.0f, 1.0f, 0.0f,
@@ -125,8 +123,7 @@ GLFWwindow* initialize_window(size_t width, size_t height) {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Fractal Visualizer", NULL, NULL);
-	if (window == NULL)
-	{
+	if (window == NULL) {
 		std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
 		exit(-1);
@@ -144,8 +141,7 @@ GLuint compile_shader_program(const char* vertex_shader_source, const char* frag
 	int success;
 	char infoLog[512];
 	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
+	if (!success) {
 		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
 		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
 	}
@@ -195,15 +191,13 @@ static void cursor_position_callback(GLFWwindow* window, double xpos, double ypo
 
 }
 
-void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
-{
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
  //    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
 	// 	std::cout << "Pressing\n";
 	// }
 }
 
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
-{
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
     if (yoffset > 0) {
         // Scrolled up (zooming in)
 		scale *= 0.8;
