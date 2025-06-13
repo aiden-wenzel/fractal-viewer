@@ -6,31 +6,32 @@
 #include <vector>
 #include <cmath>
 #include <cassert>
+#include <getopt.h>
 
 // settings
 float SCR_WIDTH = 900.0f;
 float SCR_HEIGHT = 900.0f;
 float scale = 1.0f;
 
-GLFWwindow* initializeWindow(size_t width, size_t height);
-GLuint compileShadarProgram(const char* vertexShaderSource, const char* fragmentShaderSource);
-void readShaderFile(const std::string& filePath, std::string& shaderString);
+GLFWwindow* initialize_window(size_t width, size_t height);
+GLuint compile_shader_program(const char* vertex_shader_source, const char* fragment_shader_source);
+void read_shader_file(const std::string& filePath, std::string& shaderString);
 static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void fill_cycle_values(std::vector<float>& values, size_t n, float lower, float upper);
 
-int main() {
-	auto window = initializeWindow(SCR_WIDTH, SCR_HEIGHT);
+int main(int argc, char** argv) {
+	auto window = initialize_window(SCR_WIDTH, SCR_HEIGHT);
 
 	glfwMakeContextCurrent(window);
 	gladLoadGL(glfwGetProcAddress);
 	
-	std::string vertexShaderSource;
-	std::string fragmentShaderSource;
-	readShaderFile("../src/mandel.vert", vertexShaderSource);
-	readShaderFile("../src/mandel.frag", fragmentShaderSource);
-	auto shaderProgram = compileShadarProgram(vertexShaderSource.c_str(), fragmentShaderSource.c_str());
+	std::string vertex_shader_source;
+	std::string fragment_shader_source;
+	read_shader_file("../src/mandel.vert", vertex_shader_source);
+	read_shader_file("../src/mandel.frag", fragment_shader_source);
+	auto shader_program = compile_shader_program(vertex_shader_source.c_str(), fragment_shader_source.c_str());
 	// set up vertex data (and buffer(s)) and configure vertex attributes
 	// ------------------------------------------------------------------
 	float vertices[] = {
@@ -53,12 +54,12 @@ int main() {
 	glBindBuffer(GL_ARRAY_BUFFER, 0); 
 	glBindVertexArray(0); 
 
-	glUseProgram(shaderProgram);
-	GLint uniform_loc = glGetUniformLocation(shaderProgram, "screen_dim");
+	glUseProgram(shader_program);
+	GLint uniform_loc = glGetUniformLocation(shader_program, "screen_dim");
 	glUniform2f(uniform_loc, SCR_WIDTH, SCR_HEIGHT);
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-	GLint u_offset_loc = glGetUniformLocation(shaderProgram, "u_offset");
+	GLint u_offset_loc = glGetUniformLocation(shader_program, "u_offset");
 	std::vector<float> offset = {0.0f, 0.0f};
 	std::vector<double> curr_mouse_pos = {0.0f, 0.0f};
 	std::vector<double> prev_mouse_pos = {0.0f, 0.0f};
@@ -66,13 +67,13 @@ int main() {
 	glfwSetMouseButtonCallback(window, mouse_button_callback);
 	glfwSetScrollCallback(window, scroll_callback);
 
-	GLint u_scale_loc = glGetUniformLocation(shaderProgram, "u_scale");
+	GLint u_scale_loc = glGetUniformLocation(shader_program, "u_scale");
 
 	size_t num_values = 1000;
 	size_t curr_value = 0;
 	std::vector<float> cycle_values(num_values);
 	fill_cycle_values(cycle_values, num_values, 0.0, 2 * M_PI);
-	GLint u_a_loc = glGetUniformLocation(shaderProgram, "u_a");
+	GLint u_a_loc = glGetUniformLocation(shader_program, "u_a");
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwGetCursorPos(window, &curr_mouse_pos[0], &curr_mouse_pos[1]);	
@@ -108,7 +109,7 @@ int main() {
 	// ------------------------------------------------------------------------
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
-	glDeleteProgram(shaderProgram);
+	glDeleteProgram(shader_program);
 
 	// glfw: terminate, clearing all previously allocated GLFW resources.
 	// ------------------------------------------------------------------
@@ -116,14 +117,14 @@ int main() {
 	return 0;
 }
 
-GLFWwindow* initializeWindow(size_t width, size_t height) {
+GLFWwindow* initialize_window(size_t width, size_t height) {
 
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Fractal Visualizer", NULL, NULL);
 	if (window == NULL)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -134,10 +135,10 @@ GLFWwindow* initializeWindow(size_t width, size_t height) {
 	return window;
 }
 
-GLuint compileShadarProgram(const char* vertexShaderSource, const char* fragmentShaderSource) {
+GLuint compile_shader_program(const char* vertex_shader_source, const char* fragment_shader_source) {
 	// vertex shader
 	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+	glShaderSource(vertexShader, 1, &vertex_shader_source, NULL);
 	glCompileShader(vertexShader);
 	// check for shader compile errors
 	int success;
@@ -150,33 +151,32 @@ GLuint compileShadarProgram(const char* vertexShaderSource, const char* fragment
 	}
 
 	unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+	glShaderSource(fragmentShader, 1, &fragment_shader_source, NULL);
 	glCompileShader(fragmentShader);
 	// check for shader compile errors
 	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
+	if (!success) {
 		glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
 		std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
 	}
 	// link shaders
-	unsigned int shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragmentShader);
-	glLinkProgram(shaderProgram);
+	unsigned int shader_program = glCreateProgram();
+	glAttachShader(shader_program, vertexShader);
+	glAttachShader(shader_program, fragmentShader);
+	glLinkProgram(shader_program);
 	// check for linking errors
-	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+	glGetProgramiv(shader_program, GL_LINK_STATUS, &success);
 	if (!success) {
-		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+		glGetProgramInfoLog(shader_program, 512, NULL, infoLog);
 		std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
 	}
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
 
-	return shaderProgram;
+	return shader_program;
 }
 
-void readShaderFile(const std::string& filePath, std::string& shaderString) {
+void read_shader_file(const std::string& filePath, std::string& shaderString) {
 	std::fstream fileStream(filePath);
 	if (!fileStream.is_open()) {
 		std::cout << "Could not open file " << filePath << "\n";
@@ -211,7 +211,6 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
         // Scrolled down (zooming out)
 		scale *= 1.2;
     }
-	std::cout << scale << '\n';
 }
 
 void fill_cycle_values(std::vector<float>& values, size_t n, float lower, float upper) {
