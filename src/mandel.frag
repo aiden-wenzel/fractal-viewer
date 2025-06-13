@@ -4,6 +4,7 @@ out vec4 FragColor;
 uniform vec2 screen_dim;
 uniform vec2 u_offset;
 uniform float u_scale;
+uniform float u_a;
 
 float divergence_lim = 10000.0;
 
@@ -26,7 +27,7 @@ void main()
 	// 	}
 	// }
 
-	vec2 c = vec2(-0.7, -0.38);
+	vec2 c = vec2(0.7885*cos(u_a), 0.7885*sin(u_a));
 	vec2 z_curr = normChoord;
 	for (int i = 0; i < 1000; i++) {
 		z_curr = vec2((z_curr.x * z_curr.x - z_curr.y * z_curr.y) + c.x, 2 * z_curr.x * z_curr.y + c.y);

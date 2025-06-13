@@ -4,6 +4,8 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <cmath>
+#include <cassert>
 
 // settings
 float SCR_WIDTH = 900.0f;
@@ -16,6 +18,7 @@ void readShaderFile(const std::string& filePath, std::string& shaderString);
 static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+void fill_cycle_values(std::vector<float>& values, size_t n, float lower, float upper);
 
 int main() {
 	auto window = initializeWindow(SCR_WIDTH, SCR_HEIGHT);
@@ -65,6 +68,12 @@ int main() {
 
 	GLint u_scale_loc = glGetUniformLocation(shaderProgram, "u_scale");
 
+	size_t num_values = 1000;
+	size_t curr_value = 0;
+	std::vector<float> cycle_values(num_values);
+	fill_cycle_values(cycle_values, num_values, 0.0, 2 * M_PI);
+	GLint u_a_loc = glGetUniformLocation(shaderProgram, "u_a");
+
 	while (!glfwWindowShouldClose(window)) {
 		glfwGetCursorPos(window, &curr_mouse_pos[0], &curr_mouse_pos[1]);	
 
@@ -74,8 +83,13 @@ int main() {
 			offset[1] = offset[1] + (curr_mouse_pos[1] - prev_mouse_pos[1]);
 		}
 
+		if (curr_value == 1001) {
+			curr_value = 0;
+		}
+		glUniform1f(u_a_loc, cycle_values[curr_value]);
+		curr_value++;
+
 		glUniform2f(u_offset_loc, offset[0], offset[1]);
-		std::cout << scale << '\n';
 		glUniform1f(u_scale_loc, scale);
 		// render
 		// ------
@@ -198,4 +212,13 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 		scale *= 1.2;
     }
 	std::cout << scale << '\n';
+}
+
+void fill_cycle_values(std::vector<float>& values, size_t n, float lower, float upper) {
+	assert(n > 0);
+	float step = (upper - lower) / (double)n;
+
+	for (size_t i = 0; i < n; i++) {
+		values[i] = lower + float(i) * step;
+	}
 }
