@@ -1,7 +1,7 @@
 #version 330 core
 
 out vec4 FragColor;
-uniform vec2 screen_dim;
+uniform vec2 u_screen_dim;
 uniform vec2 u_offset;
 uniform float u_scale;
 uniform float u_a;
@@ -11,7 +11,7 @@ float divergence_lim = 10000.0;
 
 void main()
 {
-	vec2 normChoord = (gl_FragCoord.xy + u_offset) / screen_dim.xy;
+	vec2 normChoord = (gl_FragCoord.xy + u_offset) / u_screen_dim.xy;
 	normChoord *= u_scale;
 	
 	vec2 c = vec2(0.7885*cos(u_a), 0.7885*sin(u_a));

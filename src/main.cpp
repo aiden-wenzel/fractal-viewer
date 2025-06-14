@@ -52,8 +52,8 @@ int main(int argc, char** argv) {
 	glBindVertexArray(0); 
 
 	glUseProgram(shader_program);
-	GLint uniform_loc = glGetUniformLocation(shader_program, "screen_dim");
-	glUniform2f(uniform_loc, SCR_WIDTH, SCR_HEIGHT);
+	GLint u_screen_dim_loc = glGetUniformLocation(shader_program, "u_screen_dim");
+	glUniform2f(u_screen_dim_loc, SCR_WIDTH, SCR_HEIGHT);
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	GLint u_offset_loc = glGetUniformLocation(shader_program, "u_offset");
