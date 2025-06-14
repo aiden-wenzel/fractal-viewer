@@ -30,7 +30,7 @@ int main(int argc, char** argv) {
 	std::string vertex_shader_source;
 	std::string fragment_shader_source;
 	read_shader_file("../src/mandel.vert", vertex_shader_source);
-	read_shader_file("../src/mandel.frag", fragment_shader_source);
+	read_shader_file("../src/julia.frag", fragment_shader_source);
 	auto shader_program = compile_shader_program(vertex_shader_source.c_str(), fragment_shader_source.c_str());
 	float vertices[] = {
 		-1.0f, -1.0f, 0.0f,

@@ -14,16 +14,15 @@ void main()
 	vec2 normChoord = (gl_FragCoord.xy + u_offset) / screen_dim.xy;
 	normChoord *= u_scale;
 	
-	vec2 z_curr = vec2(0.0, 0.0);
-	// for (int i = 0; i < 10000; i++) {
-		z_curr = vec2(z_curr.x * z_curr.x - z_curr.y * z_curr.y, 2 * z_curr.x * z_curr.y);
-
-		z_curr.x += normChoord.x;
-		z_curr.y += normChoord.y;
+	vec2 c = vec2(0.7885*cos(u_a), 0.7885*sin(u_a));
+	vec2 z_curr = normChoord;
+	for (int i = 0; i < 1000; i++) {
+		z_curr = vec2((z_curr.x * z_curr.x - z_curr.y * z_curr.y) + c.x, 2 * z_curr.x * z_curr.y + c.y);
 
 		if (distance(z_curr, vec2(0.0, 0.0)) > divergence_lim) {
 			FragColor = vec4(i/100.0, 0.0, 0.0, 1.0);
 			return;
 		}
 	}
+	FragColor = vec4(0.0, 0.0, 0.0, 1.0);
 } 
