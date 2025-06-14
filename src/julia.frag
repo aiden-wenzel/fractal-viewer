@@ -6,7 +6,7 @@ uniform vec2 u_offset;
 uniform float u_scale;
 uniform float u_a;
 
-float divergence_lim = 10000.0;
+float divergence_lim = 100000000.0;
 
 
 void main()

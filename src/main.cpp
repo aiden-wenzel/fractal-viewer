@@ -30,14 +30,14 @@ int main(int argc, char** argv) {
 	}
 
 	Mode current_mode;
-	if (!strcmp(argv[1], "Mandelbrot")) {
+	if (!strcmp(argv[1], "mandel")) {
 		current_mode = Mode::Mandel;
 	}
-	else if (!strcmp(argv[1], "Julia")) {
+	else if (!strcmp(argv[1], "julia")) {
 		current_mode = Mode::Julia;
 	}
 	else {
-		std::cout << "Error: Invalid mode. Supported modes are \"Julia\" and \"Mandelbrot\"\n";
+		std::cout << "Error: Invalid mode. Supported modes are \"julia\" and \"mandel\"\n";
 		exit(1);
 	}
 
