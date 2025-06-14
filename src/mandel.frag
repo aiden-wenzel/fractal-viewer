@@ -20,7 +20,7 @@ void main()
 		z_curr.y += normChoord.y;
 
 		if (distance(z_curr, vec2(0.0, 0.0)) > divergence_lim) {
-			FragColor = vec4(i/100.0, 0.0, 0.0, 1.0);
+			FragColor = vec4(i/100.0, i/100.0, i/100.0, 1.0);
 			return;
 		}
 	}

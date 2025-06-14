@@ -2,7 +2,7 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
-#include <fstream>
+#include <cstring>
 #include <vector>
 #include <cmath>
 #include <cassert>
@@ -23,8 +23,25 @@ enum Mode {
 void fill_cycle_values(std::vector<float>& values, size_t n, float lower, float upper);
 
 int main(int argc, char** argv) {
+	if (argc != 2) {
+		std::cout << "Error: Incorrect number of arguments\n";
+		std::cout << "Correct Usage: src/main <mode>\n";
+		exit(1);
+	}
+
+	Mode current_mode;
+	if (!strcmp(argv[1], "Mandelbrot")) {
+		current_mode = Mode::Mandel;
+	}
+	else if (!strcmp(argv[1], "Julia")) {
+		current_mode = Mode::Julia;
+	}
+	else {
+		std::cout << "Error: Invalid mode. Supported modes are \"Julia\" and \"Mandelbrot\"\n";
+		exit(1);
+	}
+
 	auto window = initialize_window(SCR_WIDTH, SCR_HEIGHT);
-	Mode current_mode = Mode::Mandel;
 
 	glfwMakeContextCurrent(window);
 	gladLoadGL(glfwGetProcAddress);
@@ -121,14 +138,10 @@ int main(int argc, char** argv) {
 		glfwPollEvents();
 	}
 
-	// optional: de-allocate all resources once they've outlived their purpose:
-	// ------------------------------------------------------------------------
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
 	glDeleteProgram(shader_program);
 
-	// glfw: terminate, clearing all previously allocated GLFW resources.
-	// ------------------------------------------------------------------
 	glfwTerminate();
 	return 0;
 }
