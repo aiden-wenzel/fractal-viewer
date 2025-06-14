@@ -20,7 +20,7 @@ void main()
 		z_curr = vec2((z_curr.x * z_curr.x - z_curr.y * z_curr.y) + c.x, 2 * z_curr.x * z_curr.y + c.y);
 
 		if (distance(z_curr, vec2(0.0, 0.0)) > divergence_lim) {
-			FragColor = vec4(i/100.0, i/100.0, 0.0, 1.0);
+			FragColor = vec4(i/100.0, i/100.0, i/100.0, 1.0);
 			return;
 		}
 	}
