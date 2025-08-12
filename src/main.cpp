@@ -8,7 +8,7 @@
 #include <cassert>
 #include <getopt.h>
 
-#include "gl_helpers.hpp"
+#include "frac/gl_helpers.hpp"
 
 // settings
 float SCR_WIDTH = 900.0f;
