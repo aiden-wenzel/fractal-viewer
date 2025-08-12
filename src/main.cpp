@@ -1,4 +1,4 @@
-#include <glad/gl.h>
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <iostream>
@@ -44,7 +44,7 @@ int main(int argc, char** argv) {
 	auto window = initialize_window(SCR_WIDTH, SCR_HEIGHT);
 
 	glfwMakeContextCurrent(window);
-	gladLoadGL(glfwGetProcAddress);
+	gladLoadGL();
 	
 	std::string vertex_shader_path = "../src/mandel.vert";
 	std::string frag_shader_path;
