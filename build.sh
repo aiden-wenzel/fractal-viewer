@@ -1,6 +1,7 @@
-sudo apt-get install libglfw3 libglfw3-dev
+git submodule init
+git submodule update
+sudo apt install libwayland-dev libxkbcommon-dev xorg-dev
 mkdir -p build
 cd build
 cmake ..
 make
-

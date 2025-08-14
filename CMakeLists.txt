@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.10)
 project(conways_game_of_life)
 set(CXXFLAGS "-g3")
 
+add_subdirectory(deps/glfw)
+
 # Find OpenGL glfw3
 find_package(OpenGL REQUIRED)
 find_package(glfw3 REQUIRED)
