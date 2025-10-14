@@ -15,32 +15,7 @@ float SCR_WIDTH = 900.0f;
 float SCR_HEIGHT = 900.0f;
 float scale = 1.0f;
 
-enum Mode {
-	Julia,
-	Mandel
-};
-
-void fill_cycle_values(std::vector<float>& values, size_t n, float lower, float upper);
-
 int main(int argc, char** argv) {
-	if (argc != 2) {
-		std::cout << "Error: Incorrect number of arguments\n";
-		std::cout << "Correct Usage: src/main <mode>\n";
-		exit(1);
-	}
-
-	Mode current_mode;
-	if (!strcmp(argv[1], "mandel")) {
-		current_mode = Mode::Mandel;
-	}
-	else if (!strcmp(argv[1], "julia")) {
-		current_mode = Mode::Julia;
-	}
-	else {
-		std::cout << "Error: Invalid mode. Supported modes are \"julia\" and \"mandel\"\n";
-		exit(1);
-	}
-
 	auto window = initialize_window(SCR_WIDTH, SCR_HEIGHT);
 
 	glfwMakeContextCurrent(window);
@@ -48,12 +23,7 @@ int main(int argc, char** argv) {
 	
 	std::string vertex_shader_path = "../src/mandel.vert";
 	std::string frag_shader_path;
-	if (current_mode == Mode::Julia) {
-		frag_shader_path = "../src/julia.frag";
-	}
-	else {
-		frag_shader_path = "../src/mandel.frag";
-	}
+	frag_shader_path = "../src/mandel.frag";
 
 	std::string vertex_shader_source;
 	std::string fragment_shader_source;
@@ -98,10 +68,6 @@ int main(int argc, char** argv) {
 
 	GLint u_scale_loc = glGetUniformLocation(shader_program, "u_scale");
 
-	size_t num_values = 1000;
-	size_t curr_value = 0;
-	std::vector<float> cycle_values(num_values);
-	fill_cycle_values(cycle_values, num_values, 0.0, 2 * M_PI);
 	GLint u_a_loc = glGetUniformLocation(shader_program, "u_a");
 
 	while (!glfwWindowShouldClose(window)) {
@@ -114,16 +80,6 @@ int main(int argc, char** argv) {
 			offset[1] = offset[1] + (curr_mouse_pos[1] - prev_mouse_pos[1]);
 		}
 		prev_mouse_pos = curr_mouse_pos;
-
-		if (curr_value == 1001) {
-			curr_value = 0;
-		}
-
-		if (current_mode == Mode::Julia) {
-			glUniform1f(u_a_loc, cycle_values[curr_value]);
-			curr_value++;
-		}
-
 		glUniform2f(u_offset_loc, offset[0], offset[1]);
 		glUniform1f(u_scale_loc, scale);
 		// render
@@ -144,13 +100,4 @@ int main(int argc, char** argv) {
 
 	glfwTerminate();
 	return 0;
-}
-
-void fill_cycle_values(std::vector<float>& values, size_t n, float lower, float upper) {
-	assert(n > 0);
-	float step = (upper - lower) / (double)n;
-
-	for (size_t i = 0; i < n; i++) {
-		values[i] = lower + float(i) * step;
-	}
 }
