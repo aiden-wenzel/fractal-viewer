@@ -31,7 +31,13 @@ Shader::Shader(const std::string& frag_shader_path, const std::string& vert_shad
 	
 	vert_stream.close();
 
+	// Compile the shader.
 	this->compile_shader();
+
+	for (int i = 0; i < this->uniforms.size(); i++) {
+		GLint temp_loc = glGetUniformLocation(this->compiled_shader, this->uniforms[i].c_str());
+		this->uniform_locations[this->uniforms[i]] = temp_loc;
+	}
 }
 
 GLuint Shader::get_compiled_shader() {
