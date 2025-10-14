@@ -79,24 +79,3 @@ void read_shader_file(const std::string& filePath, std::string& shaderString) {
 	
 	fileStream.close();
 }
-
-void cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
-
-}
-
-void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
- //    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
-	// 	std::cout << "Pressing\n";
-	// }
-}
-
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
-    if (yoffset > 0) {
-        // Scrolled up (zooming in)
-		scale *= 0.8;
-    } else if (yoffset < 0) {
-        // Scrolled down (zooming out)
-		scale *= 1.2;
-    }
-}
-

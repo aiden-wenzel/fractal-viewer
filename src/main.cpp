@@ -13,7 +13,7 @@
 // settings
 float SCR_WIDTH = 900.0f;
 float SCR_HEIGHT = 900.0f;
-float scale = 1.0f;
+float scale = 4.0f;
 
 int main(int argc, char** argv) {
 	auto window = initialize_window(SCR_WIDTH, SCR_HEIGHT);
@@ -59,27 +59,13 @@ int main(int argc, char** argv) {
 	// pass in cursor information.
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	GLint u_offset_loc = glGetUniformLocation(shader_program, "u_offset");
-	std::vector<float> offset = {0.0f, 0.0f};
-	std::vector<double> curr_mouse_pos = {0.0f, 0.0f};
-	std::vector<double> prev_mouse_pos = {0.0f, 0.0f};
-	glfwSetCursorPosCallback(window, cursor_position_callback);
-	glfwSetMouseButtonCallback(window, mouse_button_callback);
-	glfwSetScrollCallback(window, scroll_callback);
+	std::vector<float> offset = {-SCR_WIDTH/2, -SCR_HEIGHT/2};
 
 	GLint u_scale_loc = glGetUniformLocation(shader_program, "u_scale");
-
 	GLint u_a_loc = glGetUniformLocation(shader_program, "u_a");
 
 	while (!glfwWindowShouldClose(window)) {
 		// Mouse position and panning
-		glfwGetCursorPos(window, &curr_mouse_pos[0], &curr_mouse_pos[1]);	
-		int mouse_state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
-
-		if (mouse_state == GLFW_PRESS) {
-			offset[0] = offset[0] - (curr_mouse_pos[0] - prev_mouse_pos[0]);
-			offset[1] = offset[1] + (curr_mouse_pos[1] - prev_mouse_pos[1]);
-		}
-		prev_mouse_pos = curr_mouse_pos;
 		glUniform2f(u_offset_loc, offset[0], offset[1]);
 		glUniform1f(u_scale_loc, scale);
 		// render
