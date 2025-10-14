@@ -11,6 +11,8 @@ class Shader {
 public:
 	Shader(const std::string& frag_shader_path, const std::string& vert_shader_path);
 	GLuint get_compiled_shader();
+	void set_float(const std::string& uniform_name, float val);
+	void set_vec2(const std::string& uniform_name, const std::vector<float>& val);
 private:
 	void compile_shader();
 
