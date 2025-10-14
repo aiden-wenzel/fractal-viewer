@@ -25,11 +25,17 @@ Shader::Shader(const std::string& frag_shader_path, const std::string& vert_shad
 		exit(-2);
 	}
 
-	while (std::getline(frag_stream, tmp)) {
+	while (std::getline(vert_stream, tmp)) {
 		this->vert_src.append(tmp + "\n");
 	}
 	
 	vert_stream.close();
+
+	this->compile_shader();
+}
+
+GLuint Shader::get_compiled_shader() {
+	return this->compiled_shader;
 }
 
 void Shader::compile_shader() {
