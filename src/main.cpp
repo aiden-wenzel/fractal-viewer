@@ -9,6 +9,7 @@
 #include <getopt.h>
 
 #include "frac/gl_helpers.hpp"
+#include "shader.hpp"
 
 // settings
 float SCR_WIDTH = 900.0f;
@@ -22,14 +23,10 @@ int main(int argc, char** argv) {
 	gladLoadGL();
 	
 	std::string vertex_shader_path = "../src/mandel.vert";
-	std::string frag_shader_path;
-	frag_shader_path = "../src/mandel.frag";
+	std::string frag_shader_path = "../src/mandel.frag";
 
-	std::string vertex_shader_source;
-	std::string fragment_shader_source;
-	read_shader_file(vertex_shader_path, vertex_shader_source);
-	read_shader_file(frag_shader_path, fragment_shader_source);
-	auto shader_program = compile_shader_program(vertex_shader_source.c_str(), fragment_shader_source.c_str());
+	Shader shader(frag_shader_path, vertex_shader_path);
+	auto shader_program = shader.get_compiled_shader();
 	glUseProgram(shader_program);
 
 	float vertices[] = {
