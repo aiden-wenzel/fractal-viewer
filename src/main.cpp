@@ -50,21 +50,15 @@ int main(int argc, char** argv) {
 	glBindVertexArray(0); 
 
 	// Pass in screen dimensions.
-	GLint u_screen_dim_loc = glGetUniformLocation(shader_program, "u_screen_dim");
-	glUniform2f(u_screen_dim_loc, SCR_WIDTH, SCR_HEIGHT);
+	shader.set_vec2("u_screen_dim", {SCR_WIDTH, SCR_HEIGHT});
 
 	// pass in cursor information.
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-	GLint u_offset_loc = glGetUniformLocation(shader_program, "u_offset");
 	std::vector<float> offset = {-SCR_WIDTH/2, -SCR_HEIGHT/2};
-
-	GLint u_scale_loc = glGetUniformLocation(shader_program, "u_scale");
-	GLint u_a_loc = glGetUniformLocation(shader_program, "u_a");
 
 	while (!glfwWindowShouldClose(window)) {
 		// Mouse position and panning
-		glUniform2f(u_offset_loc, offset[0], offset[1]);
-		glUniform1f(u_scale_loc, scale);
+		shader.set_vec2("u_offset", offset);
+		shader.set_float("u_scale", scale);
 		// render
 		// ------
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
