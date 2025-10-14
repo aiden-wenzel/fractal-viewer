@@ -10,6 +10,7 @@
 
 #include "frac/gl_helpers.hpp"
 #include "shader.hpp"
+#include "app.hpp"
 
 // settings
 float SCR_WIDTH = 900.0f;
@@ -17,9 +18,9 @@ float SCR_HEIGHT = 900.0f;
 float scale = 4.0f;
 
 int main(int argc, char** argv) {
-	auto window = initialize_window(SCR_WIDTH, SCR_HEIGHT);
+	App application(SCR_WIDTH, SCR_HEIGHT);
 
-	glfwMakeContextCurrent(window);
+	glfwMakeContextCurrent(application.get_window());
 	gladLoadGL();
 	
 	std::string vertex_shader_path = "../src/mandel.vert";
@@ -55,7 +56,7 @@ int main(int argc, char** argv) {
 	// pass in cursor information.
 	std::vector<float> offset = {-SCR_WIDTH/2, -SCR_HEIGHT/2};
 
-	while (!glfwWindowShouldClose(window)) {
+	while (!glfwWindowShouldClose(application.get_window())) {
 		// Mouse position and panning
 		shader.set_vec2("u_offset", offset);
 		shader.set_float("u_scale", scale);
@@ -67,7 +68,7 @@ int main(int argc, char** argv) {
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
-		glfwSwapBuffers(window);
+		glfwSwapBuffers(application.get_window());
 		glfwPollEvents();
 	}
 
