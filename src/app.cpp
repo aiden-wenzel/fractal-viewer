@@ -1,4 +1,5 @@
 #include "frac/app.hpp"
+#include "frac/mouse.hpp"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>

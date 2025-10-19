@@ -1,4 +1,5 @@
 #include "frac/shader.hpp"
+#include "frac/mouse.hpp"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -18,6 +19,7 @@ public:
 private:
 	void initialize_verticies(); 
 	GLFWwindow* window;
+	Mouse mouse;
 	Shader* fractal_shader;
 	unsigned int VBO, VAO;
 };
