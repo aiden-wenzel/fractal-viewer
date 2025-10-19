@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 
-#include "shader.hpp"
+#include "frac/shader.hpp"
 
 Shader::Shader(const std::string& frag_shader_path, const std::string& vert_shader_path) {
 	// Read in fragment shader.

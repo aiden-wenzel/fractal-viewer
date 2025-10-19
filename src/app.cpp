@@ -1,4 +1,4 @@
-#include "app.hpp"
+#include "frac/app.hpp"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -30,6 +30,8 @@ App::App (size_t width, size_t height) {
 	
 	this->fractal_shader = new Shader(frag_shader_path, vertex_shader_path);
 	glUseProgram(this->fractal_shader->get_compiled_shader());
+
+	this->initialize_verticies();
 }
 
 App::~App() {
@@ -37,25 +39,6 @@ App::~App() {
 }
 
 void App::run() {
-	float vertices[] = {
-		-1.0f, -1.0f, 0.0f,
-		-1.0f, 1.0f, 0.0f,
-		1.0f, 1.0f, 0.0f,
-		-1.0f, -1.0f, 0.0f,
-		1.0f, 1.0f, 0.0f,
-		1.0f, -1.0f, 0.0f
-	}; 
-
-	unsigned int VBO, VAO;
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0); 
-	glBindVertexArray(0); 
 
 	// Pass in screen dimensions.
 	this->fractal_shader->set_vec2("u_screen_dim", {SCR_WIDTH, SCR_HEIGHT});
@@ -72,16 +55,37 @@ void App::run() {
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glBindVertexArray(VAO);
+		glBindVertexArray(this->VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
 		glfwSwapBuffers(this->window);
 		glfwPollEvents();
 	}
 
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
+	glDeleteVertexArrays(1, &this->VAO);
+	glDeleteBuffers(1, &this->VBO);
 	glDeleteProgram(this->fractal_shader->get_compiled_shader());
+}
+
+void App::initialize_verticies() {
+	float vertices[] = {
+		-1.0f, -1.0f, 0.0f,
+		-1.0f, 1.0f, 0.0f,
+		1.0f, 1.0f, 0.0f,
+		-1.0f, -1.0f, 0.0f,
+		1.0f, 1.0f, 0.0f,
+		1.0f, -1.0f, 0.0f
+	}; 
+
+	glGenVertexArrays(1, &this->VAO);
+	glGenBuffers(1, &this->VBO);
+	glBindVertexArray(this->VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0); 
+	glBindVertexArray(0); 
 }
 
 GLFWwindow* App::get_window() {
