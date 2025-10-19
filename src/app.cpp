@@ -17,8 +17,20 @@ App::App (size_t width, size_t height) {
 		glfwTerminate();
 		exit(-1);
 	}
+
+	glfwMakeContextCurrent(this->window);
+	gladLoadGL();
+
+	std::string vertex_shader_path = "../src/mandel.vert";
+	std::string frag_shader_path = "../src/mandel.frag";
+	
+	this->fractal_shader = new Shader(frag_shader_path, vertex_shader_path);
 }
 
 GLFWwindow* App::get_window() {
 	return this->window;
+}
+
+Shader* App::get_shader() {
+	return this->fractal_shader;
 }

@@ -19,16 +19,7 @@ float scale = 4.0f;
 
 int main(int argc, char** argv) {
 	App application(SCR_WIDTH, SCR_HEIGHT);
-
-	glfwMakeContextCurrent(application.get_window());
-	gladLoadGL();
-	
-	std::string vertex_shader_path = "../src/mandel.vert";
-	std::string frag_shader_path = "../src/mandel.frag";
-
-	Shader shader(frag_shader_path, vertex_shader_path);
-	auto shader_program = shader.get_compiled_shader();
-	glUseProgram(shader_program);
+	glUseProgram(application.get_shader()->get_compiled_shader());
 
 	float vertices[] = {
 		-1.0f, -1.0f, 0.0f,
@@ -51,15 +42,15 @@ int main(int argc, char** argv) {
 	glBindVertexArray(0); 
 
 	// Pass in screen dimensions.
-	shader.set_vec2("u_screen_dim", {SCR_WIDTH, SCR_HEIGHT});
+	application.get_shader()->set_vec2("u_screen_dim", {SCR_WIDTH, SCR_HEIGHT});
 
 	// pass in cursor information.
 	std::vector<float> offset = {-SCR_WIDTH/2, -SCR_HEIGHT/2};
 
 	while (!glfwWindowShouldClose(application.get_window())) {
 		// Mouse position and panning
-		shader.set_vec2("u_offset", offset);
-		shader.set_float("u_scale", scale);
+		application.get_shader()->set_vec2("u_offset", offset);
+		application.get_shader()->set_float("u_scale", scale);
 		// render
 		// ------
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -74,7 +65,7 @@ int main(int argc, char** argv) {
 
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
-	glDeleteProgram(shader_program);
+	glDeleteProgram(application.get_shader()->get_compiled_shader());
 
 	glfwTerminate();
 	return 0;
