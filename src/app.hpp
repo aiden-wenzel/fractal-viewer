@@ -8,6 +8,8 @@
 class App {
 public:
 	App	(size_t width, size_t height);
+	~App();
+	void run();
 
 	GLFWwindow* get_window();
 	Shader* get_shader();
