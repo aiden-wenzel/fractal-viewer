@@ -52,7 +52,7 @@ void Shader::set_float(const std::string& uniform_name, float val) {
 	glUniform1f(it->second, val);
 }
 
-void Shader::set_vec2(const std::string& uniform_name, const std::vector<float>& val) {
+void Shader::set_vec2(const std::string& uniform_name, const std::vector<double>& val) {
 	auto it = this->uniform_locations.find(uniform_name);
 	if (it == this->uniform_locations.end()) {
 		std::cout << "Error: Couldn't find " << uniform_name << " in shader.\n";
