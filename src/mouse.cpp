@@ -33,5 +33,4 @@ void Mouse::poll_current_mouse_pos(GLFWwindow* window) {
 		this->mouse_diff[0] = 0;
 		this->mouse_diff[1] = 0;
 	}
-	std::cout << this->mouse_diff[0] << " " << this->mouse_diff[1] << "\n";
 }
