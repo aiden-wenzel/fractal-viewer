@@ -40,7 +40,7 @@ App::~App() {
 }
 
 void App::run() {
-
+	
 	// Pass in screen dimensions.
 	this->fractal_shader->set_vec2("u_screen_dim", {SCR_WIDTH, SCR_HEIGHT});
 
@@ -48,6 +48,7 @@ void App::run() {
 	std::vector<float> offset = {-SCR_WIDTH/2, -SCR_HEIGHT/2};
 
 	while (!glfwWindowShouldClose(this->window)) {
+		this->mouse.poll_current_mouse_pos(this->window);
 		// Mouse position and panning
 		this->fractal_shader->set_vec2("u_offset", offset);
 		this->fractal_shader->set_float("u_scale", scale);
