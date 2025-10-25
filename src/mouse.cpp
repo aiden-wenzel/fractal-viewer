@@ -11,6 +11,10 @@ Mouse::Mouse() {
 	this->prev_mouse_pos = {0, 0};
 }
 
+const std::vector<double>& Mouse::get_mouse_diff() {
+	return this->mouse_diff;
+}
+
 Mouse::~Mouse() {
 	 
 }

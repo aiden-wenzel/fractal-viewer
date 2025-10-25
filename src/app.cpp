@@ -45,11 +45,13 @@ void App::run() {
 	this->fractal_shader->set_vec2("u_screen_dim", {SCR_WIDTH, SCR_HEIGHT});
 
 	// pass in cursor information.
-	std::vector<float> offset = {-SCR_WIDTH/2, -SCR_HEIGHT/2};
+	std::vector<double> offset = {-SCR_WIDTH/2, -SCR_HEIGHT/2};
 
 	while (!glfwWindowShouldClose(this->window)) {
 		this->mouse.poll_current_mouse_pos(this->window);
-		// Mouse position and panning
+		offset[0] -= mouse.get_mouse_diff()[0];
+		offset[1] += mouse.get_mouse_diff()[1]; // Mouse position and panning
+
 		this->fractal_shader->set_vec2("u_offset", offset);
 		this->fractal_shader->set_float("u_scale", scale);
 		// render
