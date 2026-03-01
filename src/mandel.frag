@@ -1,6 +1,7 @@
 #version 330 core
 
 out vec4 FragColor;
+uniform vec2 u_center;
 uniform vec2 u_screen_dim;
 
 float divergence_lim = 10000.0;

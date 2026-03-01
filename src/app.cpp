@@ -6,9 +6,8 @@
 
 #include <iostream>
 
-float SCR_WIDTH = 900.0f;
-float SCR_HEIGHT = 900.0f;
-float scale = 4.0f;
+std::vector<double> screen_dim = {900, 900};
+std::vector<double> center = {-0.75, 0.1};
 
 App::App (size_t width, size_t height) {
 	glfwInit();
@@ -42,10 +41,8 @@ App::~App() {
 void App::run() {
 	
 	// Pass in screen dimensions.
-	this->fractal_shader->set_vec2("u_screen_dim", {SCR_WIDTH, SCR_HEIGHT});
-
-	// pass in cursor information.
-	std::vector<double> offset = {-SCR_WIDTH/2, -SCR_HEIGHT/2};
+	this->fractal_shader->set_vec2("u_screen_dim", screen_dim);
+	this->fractal_shader->set_vec2("u_center", center);
 
 	while (!glfwWindowShouldClose(this->window)) {
 		/*
