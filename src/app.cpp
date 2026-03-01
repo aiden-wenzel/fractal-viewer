@@ -4,10 +4,11 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <cmath>
 #include <iostream>
 
 std::vector<double> screen_dim = {900, 900};
-std::vector<double> center = {-0.75, 0.1};
+std::vector<double> center = {-0.743643887037151, 0.131825904205330};
 
 App::App (size_t width, size_t height) {
 	glfwInit();
@@ -44,7 +45,11 @@ void App::run() {
 	this->fractal_shader->set_vec2("u_screen_dim", screen_dim);
 	this->fractal_shader->set_vec2("u_center", center);
 
+	int loop_count = 0;
+	float step_size = 0.01;
 	while (!glfwWindowShouldClose(this->window)) {
+		this->fractal_shader->set_float("zoom", exp(-loop_count*step_size));
+		loop_count++;
 		/*
 		this->mouse.poll_current_mouse_pos(this->window);
 		offset[0] -= mouse.get_mouse_diff()[0];
