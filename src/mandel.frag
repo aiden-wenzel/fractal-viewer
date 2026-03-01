@@ -9,6 +9,8 @@ float divergence_lim = 10000.0;
 void main()
 {
 	vec2 normChoord = gl_FragCoord.xy / u_screen_dim.xy;
+	normChoord.x = normChoord.x - 1.25;
+	normChoord.y = normChoord.y - 0.4;
 	
 	vec2 z_curr = vec2(0.0, 0.0);
 	for (int i = 0; i < 10000; i++) {
