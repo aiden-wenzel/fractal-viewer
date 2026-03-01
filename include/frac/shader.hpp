@@ -16,7 +16,7 @@ public:
 private:
 	void compile_shader();
 
-	std::vector<std::string> uniforms = {"u_screen_dim", "u_offset", "u_scale"};
+	std::vector<std::string> uniforms = {"u_screen_dim", "u_center"};
 	std::unordered_map<std::string, GLint> uniform_locations;
 	std::string frag_src;
 	std::string vert_src;
