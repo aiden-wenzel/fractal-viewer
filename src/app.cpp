@@ -9,6 +9,9 @@
 
 std::vector<double> screen_dim = {900, 900};
 std::vector<double> center = {-0.743643887037151, 0.131825904205330};
+int SCROLL_COUNT = 0;
+
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 App::App (size_t width, size_t height) {
 	glfwInit();
@@ -40,21 +43,18 @@ App::~App() {
 }
 
 void App::run() {
-	
+	glfwSetScrollCallback(window, scroll_callback);
 	// Pass in screen dimensions.
 	this->fractal_shader->set_vec2("u_screen_dim", screen_dim);
 	this->fractal_shader->set_vec2("u_center", center);
 
-	int loop_count = 0;
-	float step_size = 0.01;
+	float step_size = 0.1;
 	while (!glfwWindowShouldClose(this->window)) {
+		/*
 		this->fractal_shader->set_float("zoom", exp(-loop_count*step_size));
 		loop_count++;
-		/*
-		this->mouse.poll_current_mouse_pos(this->window);
-		offset[0] -= mouse.get_mouse_diff()[0];
-		offset[1] += mouse.get_mouse_diff()[1]; // Mouse position and panning
 		*/
+		this->fractal_shader->set_float("zoom", exp(-SCROLL_COUNT*step_size));
 
 		// render
 		// ------
@@ -100,4 +100,13 @@ GLFWwindow* App::get_window() {
 
 Shader* App::get_shader() {
 	return this->fractal_shader;
+}
+
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
+	if (yoffset > 0) {
+		SCROLL_COUNT++;
+	}
+	else if (yoffset < 0) {
+		SCROLL_COUNT--;
+	}
 }
