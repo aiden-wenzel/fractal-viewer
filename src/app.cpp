@@ -11,7 +11,7 @@
 std::vector<double> screen_dim = {900, 900};
 std::vector<double> center = {0, 0};
 int SCROLL_COUNT = 0;
-bool PANNING = false;
+float ZOOM_SPEED = 0.01;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 void initialize_key_states();
@@ -20,7 +20,9 @@ std::vector<int> KEYS = {
 	GLFW_KEY_W,
 	GLFW_KEY_A,
 	GLFW_KEY_S,
-	GLFW_KEY_D
+	GLFW_KEY_D,
+	GLFW_KEY_SPACE,
+	GLFW_KEY_LEFT_SHIFT
 };
 
 App::App (size_t width, size_t height) {
@@ -58,7 +60,6 @@ void App::run() {
 	// Pass in screen dimensions.
 	this->fractal_shader->set_vec2("u_screen_dim", screen_dim);
 
-	float step_size = 0.1;
 	auto mouse_diff = this->mouse.get_mouse_diff();
 	while (!glfwWindowShouldClose(this->window)) {
 		/*
@@ -66,13 +67,9 @@ void App::run() {
 		loop_count++;
 		*/
 		this->pan();
-		this->fractal_shader->set_float("zoom", exp(-SCROLL_COUNT*step_size));
+		this->fractal_shader->set_float("zoom", exp(-SCROLL_COUNT*ZOOM_SPEED));
 
 		this->fractal_shader->set_vec2("u_center", center);
-
-		if (PANNING) {
-			std::cout << "PANNING\n";
-		}
 
 		// render
 		// ------
@@ -134,6 +131,12 @@ void App::pan() {
 	}
 	if (KEY_STATE[GLFW_KEY_D]) {
 		center[0] += pan_speed;
+	}
+	if (KEY_STATE[GLFW_KEY_SPACE]) {
+		SCROLL_COUNT++;
+	}
+	if (KEY_STATE[GLFW_KEY_LEFT_SHIFT]) {
+		SCROLL_COUNT--;
 	}
 }
 
