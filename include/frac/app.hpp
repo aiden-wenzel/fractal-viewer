@@ -18,6 +18,7 @@ public:
 	Shader* get_shader();
 private:
 	void initialize_verticies(); 
+	void pan();
 	GLFWwindow* window;
 	Mouse mouse;
 	Shader* fractal_shader;

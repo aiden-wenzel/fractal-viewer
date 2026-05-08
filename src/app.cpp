@@ -4,11 +4,26 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <cmath>
 #include <iostream>
+#include <unordered_map>
 
-float SCR_WIDTH = 900.0f;
-float SCR_HEIGHT = 900.0f;
-float scale = 4.0f;
+std::vector<double> screen_dim = {900, 900};
+std::vector<double> center = {0, 0};
+int SCROLL_COUNT = 0;
+float ZOOM_SPEED = 0.01;
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+void initialize_key_states();
+std::unordered_map<int, bool> KEY_STATE;
+std::vector<int> KEYS = {
+	GLFW_KEY_W,
+	GLFW_KEY_A,
+	GLFW_KEY_S,
+	GLFW_KEY_D,
+	GLFW_KEY_SPACE,
+	GLFW_KEY_LEFT_SHIFT
+};
 
 App::App (size_t width, size_t height) {
 	glfwInit();
@@ -40,20 +55,22 @@ App::~App() {
 }
 
 void App::run() {
-	
+	initialize_key_states();
+	glfwSetKeyCallback(this->window, key_callback);
 	// Pass in screen dimensions.
-	this->fractal_shader->set_vec2("u_screen_dim", {SCR_WIDTH, SCR_HEIGHT});
+	this->fractal_shader->set_vec2("u_screen_dim", screen_dim);
 
-	// pass in cursor information.
-	std::vector<double> offset = {-SCR_WIDTH/2, -SCR_HEIGHT/2};
-
+	auto mouse_diff = this->mouse.get_mouse_diff();
 	while (!glfwWindowShouldClose(this->window)) {
-		this->mouse.poll_current_mouse_pos(this->window);
-		offset[0] -= mouse.get_mouse_diff()[0];
-		offset[1] += mouse.get_mouse_diff()[1]; // Mouse position and panning
+		/*
+		this->fractal_shader->set_float("zoom", exp(-loop_count*step_size));
+		loop_count++;
+		*/
+		this->pan();
+		this->fractal_shader->set_float("zoom", exp(-SCROLL_COUNT*ZOOM_SPEED));
 
-		this->fractal_shader->set_vec2("u_offset", offset);
-		this->fractal_shader->set_float("u_scale", scale);
+		this->fractal_shader->set_vec2("u_center", center);
+
 		// render
 		// ------
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -92,10 +109,48 @@ void App::initialize_verticies() {
 	glBindVertexArray(0); 
 }
 
+
 GLFWwindow* App::get_window() {
 	return this->window;
 }
 
 Shader* App::get_shader() {
 	return this->fractal_shader;
+}
+
+void App::pan() {
+	float pan_speed = 0.01*exp(-SCROLL_COUNT*ZOOM_SPEED);
+	if (KEY_STATE[GLFW_KEY_W]) {
+		center[1] += pan_speed;
+	}
+	if (KEY_STATE[GLFW_KEY_A]) {
+		center[0] -= pan_speed;
+	}
+	if (KEY_STATE[GLFW_KEY_S]) {
+		center[1] -= pan_speed;
+	}
+	if (KEY_STATE[GLFW_KEY_D]) {
+		center[0] += pan_speed;
+	}
+	if (KEY_STATE[GLFW_KEY_SPACE]) {
+		SCROLL_COUNT++;
+	}
+	if (KEY_STATE[GLFW_KEY_LEFT_SHIFT]) {
+		SCROLL_COUNT--;
+	}
+}
+
+void initialize_key_states() {
+	for (size_t i = 0; i < KEYS.size(); i++) {
+		KEY_STATE.insert({KEYS[i], false});
+	}
+}
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	if (action == GLFW_PRESS) {
+		KEY_STATE[key] = true;
+	}
+	else if (action == GLFW_RELEASE) {
+		KEY_STATE[key] = false;
+	}
 }
