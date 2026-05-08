@@ -6,12 +6,22 @@
 
 #include <cmath>
 #include <iostream>
+#include <unordered_map>
 
 std::vector<double> screen_dim = {900, 900};
-std::vector<double> center = {-0.743643887037151, 0.131825904205330};
+std::vector<double> center = {0, 0};
 int SCROLL_COUNT = 0;
+bool PANNING = false;
 
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+void initialize_key_states();
+std::unordered_map<int, bool> KEY_STATE;
+std::vector<int> KEYS = {
+	GLFW_KEY_W,
+	GLFW_KEY_A,
+	GLFW_KEY_S,
+	GLFW_KEY_D
+};
 
 App::App (size_t width, size_t height) {
 	glfwInit();
@@ -43,18 +53,26 @@ App::~App() {
 }
 
 void App::run() {
-	glfwSetScrollCallback(window, scroll_callback);
+	initialize_key_states();
+	glfwSetKeyCallback(this->window, key_callback);
 	// Pass in screen dimensions.
 	this->fractal_shader->set_vec2("u_screen_dim", screen_dim);
-	this->fractal_shader->set_vec2("u_center", center);
 
 	float step_size = 0.1;
+	auto mouse_diff = this->mouse.get_mouse_diff();
 	while (!glfwWindowShouldClose(this->window)) {
 		/*
 		this->fractal_shader->set_float("zoom", exp(-loop_count*step_size));
 		loop_count++;
 		*/
+		this->pan();
 		this->fractal_shader->set_float("zoom", exp(-SCROLL_COUNT*step_size));
+
+		this->fractal_shader->set_vec2("u_center", center);
+
+		if (PANNING) {
+			std::cout << "PANNING\n";
+		}
 
 		// render
 		// ------
@@ -94,6 +112,7 @@ void App::initialize_verticies() {
 	glBindVertexArray(0); 
 }
 
+
 GLFWwindow* App::get_window() {
 	return this->window;
 }
@@ -102,11 +121,33 @@ Shader* App::get_shader() {
 	return this->fractal_shader;
 }
 
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
-	if (yoffset > 0) {
-		SCROLL_COUNT++;
+void App::pan() {
+	float pan_speed = 0.01;
+	if (KEY_STATE[GLFW_KEY_W]) {
+		center[1] += pan_speed;
 	}
-	else if (yoffset < 0) {
-		SCROLL_COUNT--;
+	if (KEY_STATE[GLFW_KEY_A]) {
+		center[0] -= pan_speed;
+	}
+	if (KEY_STATE[GLFW_KEY_S]) {
+		center[1] -= pan_speed;
+	}
+	if (KEY_STATE[GLFW_KEY_D]) {
+		center[0] += pan_speed;
+	}
+}
+
+void initialize_key_states() {
+	for (size_t i = 0; i < KEYS.size(); i++) {
+		KEY_STATE.insert({KEYS[i], false});
+	}
+}
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	if (action == GLFW_PRESS) {
+		KEY_STATE[key] = true;
+	}
+	else if (action == GLFW_RELEASE) {
+		KEY_STATE[key] = false;
 	}
 }
