@@ -119,7 +119,7 @@ Shader* App::get_shader() {
 }
 
 void App::pan() {
-	float pan_speed = 0.01;
+	float pan_speed = 0.01*exp(-SCROLL_COUNT*ZOOM_SPEED);
 	if (KEY_STATE[GLFW_KEY_W]) {
 		center[1] += pan_speed;
 	}
