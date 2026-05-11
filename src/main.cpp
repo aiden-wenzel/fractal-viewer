@@ -10,8 +10,8 @@
 
 int main(int argc, char** argv) {
 	
-	float width = 900.0f;
-	float height= 900.0f;
+	float width = 950.0f;
+	float height= 950.0f;
 	App application(width, height);
 	application.run();
 	glfwTerminate();

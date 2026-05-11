@@ -19,6 +19,7 @@ public:
 private:
 	void initialize_verticies(); 
 	void pan();
+	std::vector<double> screen_dim;
 	GLFWwindow* window;
 	Mouse mouse;
 	Shader* fractal_shader;

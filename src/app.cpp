@@ -8,7 +8,6 @@
 #include <iostream>
 #include <unordered_map>
 
-std::vector<double> screen_dim = {900, 900};
 std::vector<double> center = {0, 0};
 int SCROLL_COUNT = 0;
 float ZOOM_SPEED = 0.01;
@@ -26,6 +25,7 @@ std::vector<int> KEYS = {
 };
 
 App::App (size_t width, size_t height) {
+	this->screen_dim = {double(width), double(height)};
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -58,7 +58,7 @@ void App::run() {
 	initialize_key_states();
 	glfwSetKeyCallback(this->window, key_callback);
 	// Pass in screen dimensions.
-	this->fractal_shader->set_vec2("u_screen_dim", screen_dim);
+	this->fractal_shader->set_vec2("u_screen_dim", this->screen_dim);
 
 	auto mouse_diff = this->mouse.get_mouse_diff();
 	while (!glfwWindowShouldClose(this->window)) {

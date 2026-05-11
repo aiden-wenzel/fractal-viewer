@@ -18,7 +18,7 @@ void main()
 		z_curr += c;
 
 		if (dot(z_curr, z_curr) > 4.0) {
-			FragColor = vec4(i/100.0, i/100.0, i/100.0, 1.0);
+			FragColor = vec4(i/300.0, i/500.0, i/500.0, 1.0);
 			return;
 		}
 	}
